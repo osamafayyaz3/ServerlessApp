@@ -1,5 +1,3 @@
-
-import { CreateSignedURLRequest } from '../requests/CreateSignedURLRequest';
 import * as AWS from 'aws-sdk';
 import * as AWSXRay from 'aws-xray-sdk';
 
@@ -15,7 +13,7 @@ export default class TodoStorage {
         return this.todosStorage;
     }
 
-    getPresignedUploadURL(createSignedUrlRequest: CreateSignedURLRequest) {
+    getPresignedUploadURL(createSignedUrlRequest) {
         return this.s3.getSignedUrl('putObject', createSignedUrlRequest);
     }
 }

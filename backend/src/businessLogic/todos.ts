@@ -8,30 +8,23 @@ import { APIGatewayProxyEvent } from 'aws-lambda';
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest';
 import TodoStorage from '../dataLayer/todoStorage';
 
-
-
-
 const todoAccess = new TodoAccess()
 const todoStorage = new TodoStorage()
 
-export async function getAllTodos(event: APIGatewayProxyEvent) {
-    const userId = getUserId(event)
+export async function getAllTodos(userId: string) {
     return todoAccess.getAllTodos(userId)
 }
 
 export async function getTodo(event: APIGatewayProxyEvent) {
     const todoId = event.pathParameters.todoId;
-    const userId = getUserId(event);
-
+    const userId = getUserId(event)
     return await todoAccess.getTodo(todoId, userId);
 }
 
 
-
-export async function createTodo(event: APIGatewayProxyEvent,
+export async function createTodo(userId: string,
     createTodoRequest: CreateTodoRequest): Promise<TodoItem> {
     const todoId = uuid.v4();
-    const userId = getUserId(event);
     const createdAt = new Date(Date.now()).toISOString();
 
     const todoItem = {
@@ -48,31 +41,16 @@ export async function createTodo(event: APIGatewayProxyEvent,
     return todoItem;
 }
 
-export async function updateTodo(event: APIGatewayProxyEvent,
+export async function updateTodo(userId: string, event: APIGatewayProxyEvent,
     updateTodoRequest: UpdateTodoRequest) {
     const todoId = event.pathParameters.todoId;
-    const userId = getUserId(event);
-
-    if (!(await todoAccess.getTodo(todoId, userId))) {
-        return false;
-    }
-
     await todoAccess.updateTodo(todoId, userId, updateTodoRequest);
 
-    return true;
 }
 
-export async function deleteTodo(event: APIGatewayProxyEvent) {
+export async function deleteTodo(userId: string, event: APIGatewayProxyEvent) {
     const todoId = event.pathParameters.todoId;
-    const userId = getUserId(event);
-  
-    if (!(await todoAccess.getTodo(todoId, userId))) {
-      return false;
-    }
-  
     await todoAccess.deleteTodo(todoId, userId);
-  
-    return true;
   }
 
 
@@ -86,7 +64,6 @@ export async function deleteTodo(event: APIGatewayProxyEvent) {
       Key: todoId,
       Expires: urlExpiration
     }
-  
     return todoStorage.getPresignedUploadURL(createSignedUrlRequest);
   }
   
