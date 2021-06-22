@@ -64,7 +64,7 @@ functions:
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
     request:
       schema:
-        application/json: ${file(src/schemas/todo-item-create.json)}
+        application/json: ${file(src/dbvalidators/create_request.json)}
 
   UpdateTodo:
     handler: src/lambda/http/updateTodo.handler
@@ -82,7 +82,7 @@ functions:
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
     request:
       schema:
-        application/json: ${file(src/schemas/todo-item-update.json
+        application/json: ${file(src/dbvalidators/update_request.json
 
   DeleteTodo:
     handler: src/lambda/http/deleteTodo.handler
